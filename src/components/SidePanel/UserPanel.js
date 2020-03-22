@@ -2,13 +2,17 @@ import React, { Component } from "react";
 import firebase from "../../firebase";
 import { Grid, Header, Icon, GridColumn, Dropdown } from "semantic-ui-react";
 
-export class UserPanel extends Component {
+class UserPanel extends Component {
+  state = {
+    user: this.props.currentUser
+  };
+
   dropdownOptions = () => [
     {
       key: "user",
       text: (
         <span>
-          Signed in as <strong>User</strong>
+          Signed in as <strong>{this.state.user.displayName}</strong>
         </span>
       ),
       disabled: true
@@ -48,7 +52,7 @@ export class UserPanel extends Component {
           {/* User Dropdown */}
           <Header style={{ padding: "0.25em" }} as="h4" inverted>
             <Dropdown
-              trigger={<span>User</span>}
+              trigger={<span>{this.state.user.displayName}</span>}
               options={this.dropdownOptions()}
             />
           </Header>
