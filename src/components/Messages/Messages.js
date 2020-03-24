@@ -54,15 +54,19 @@ export class Messages extends Component {
   };
 
   handleSearchMessages = () => {
-    const channelMessages = [...this.state.Messages];
+    const channelMessages = [...this.state.messages];
     const regex = new RegExp(this.state.searchTerm, "gi");
     const searchResults = channelMessages.reduce((acc, message) => {
-      if (message.content && message.content.match(regex)) {
+      if (
+        (message.content && message.content.match(regex)) ||
+        message.user.name.match(regex)
+      ) {
         acc.push(message);
       }
       return acc;
     }, []);
     this.setState({ searchResults });
+    setTimeout(() => this.setState({ searchLoading: false }), 500);
   };
 
   countUniqueUsers = (messages) => {
@@ -97,7 +101,8 @@ export class Messages extends Component {
       user,
       numUniqueUsers,
       searchTerm,
-      searchResults
+      searchResults,
+      searchLoading
     } = this.state;
     return (
       <Fragment>
@@ -105,6 +110,7 @@ export class Messages extends Component {
           channelName={this.displayChannelName(channel)}
           numUniqueUsers={numUniqueUsers}
           handleSearchChange={this.handleSearchChange}
+          searchLoading={searchLoading}
         />
 
         <Segment>
