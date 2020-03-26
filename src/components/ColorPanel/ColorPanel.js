@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { setColors } from "../../actions";
-import { CirclePicker } from "react-color";
+import { SliderPicker } from "react-color";
 import {
   Sidebar,
   Menu,
@@ -110,7 +110,7 @@ export class ColorPanel extends Component {
           <Modal.Content>
             <Segment inverted>
               <Label content="Primary Color" />
-              <CirclePicker
+              <SliderPicker
                 color={primary}
                 onChange={this.handleChangePrimary}
               />
@@ -118,7 +118,7 @@ export class ColorPanel extends Component {
 
             <Segment inverted>
               <Label content="Secondary Color" />
-              <CirclePicker
+              <SliderPicker
                 color={secondary}
                 onChange={this.handleChangeSecondary}
               />
