@@ -20,9 +20,9 @@ class DirectMessages extends Component {
     }
   }
 
-  addListeners = (currentUserUid) => {
+  addListeners = currentUserUid => {
     let loadedUsers = [];
-    this.state.usersRef.on("child_added", (snap) => {
+    this.state.usersRef.on("child_added", snap => {
       if (currentUserUid !== snap.key) {
         let user = snap.val();
         user["uid"] = snap.key;
@@ -32,11 +32,11 @@ class DirectMessages extends Component {
       }
     });
 
-    this.state.connectedRef.on("value", (snap) => {
+    this.state.connectedRef.on("value", snap => {
       if (snap.val() === true) {
         const ref = this.state.presenceRef.child(currentUserUid);
         ref.set(true);
-        ref.onDisconnect().remove((err) => {
+        ref.onDisconnect().remove(err => {
           if (err !== null) {
             console.error(err);
           }
@@ -44,13 +44,13 @@ class DirectMessages extends Component {
       }
     });
 
-    this.state.presenceRef.on("child_added", (snap) => {
+    this.state.presenceRef.on("child_added", snap => {
       if (currentUserUid !== snap.key) {
         this.addStatusToUser(snap.key);
       }
     });
 
-    this.state.presenceRef.on("child_removed", (snap) => {
+    this.state.presenceRef.on("child_removed", snap => {
       if (currentUserUid !== snap.key) {
         this.addStatusToUser(snap.key, false);
       }
@@ -67,9 +67,9 @@ class DirectMessages extends Component {
     this.setState({ users: updatedUsers });
   };
 
-  isUserOnline = (user) => user.status === "online";
+  isUserOnline = user => user.status === "online";
 
-  changeChannel = (user) => {
+  changeChannel = user => {
     const channelId = this.getChannelId(user.uid);
     const channelData = {
       id: channelId,
@@ -80,14 +80,12 @@ class DirectMessages extends Component {
     this.setActiveChannel(user.uid);
   };
 
-  getChannelId = (userId) => {
+  getChannelId = userId => {
     const currentUserId = this.state.user.uid;
-    return userId < currentUserId
-      ? `${userId}/${currentUserId}`
-      : `${currentUserId}/${userId}`;
+    return userId < currentUserId ? `${userId}/${currentUserId}` : `${currentUserId}/${userId}`;
   };
 
-  setActiveChannel = (userId) => {
+  setActiveChannel = userId => {
     this.setState({ activeChannel: userId });
   };
 
@@ -102,18 +100,14 @@ class DirectMessages extends Component {
           </span>{" "}
           ({users.length})
         </Menu.Item>
-        {users.map((user) => (
+        {users.map(user => (
           <Menu.Item
             key={user.uid}
             active={user.uid === activeChannel}
             onClick={() => this.changeChannel(user)}
             style={{ opacity: 0.7, fontStyle: "italic" }}
           >
-            <Icon
-              name="circle"
-              color={this.isUserOnline(user) ? "green" : "red"}
-            />
-            @ {user.name}
+            <Icon name="circle" color={this.isUserOnline(user) ? "green" : "red"} />@ {user.name}
           </Menu.Item>
         ))}
       </Menu.Menu>
@@ -121,6 +115,4 @@ class DirectMessages extends Component {
   }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel })(
-  DirectMessages
-);
+export default connect(null, { setCurrentChannel, setPrivateChannel })(DirectMessages);

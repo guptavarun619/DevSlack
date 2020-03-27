@@ -18,11 +18,11 @@ class Starred extends Component {
     }
   }
 
-  addListeners = (userId) => {
+  addListeners = userId => {
     this.state.usersRef
       .child(userId)
       .child("starred")
-      .on("child_added", (snap) => {
+      .on("child_added", snap => {
         const starredChannel = { id: snap.key, ...snap.val() };
         this.setState({
           starredChannels: [...this.state.starredChannels, starredChannel]
@@ -32,30 +32,28 @@ class Starred extends Component {
     this.state.usersRef
       .child(userId)
       .child("starred")
-      .on("child_removed", (snap) => {
+      .on("child_removed", snap => {
         const channelToRemove = { id: snap.key, ...snap.val() };
-        const filteredChannels = this.state.starredChannels.filter(
-          (channel) => {
-            return channel.id !== channelToRemove.id;
-          }
-        );
+        const filteredChannels = this.state.starredChannels.filter(channel => {
+          return channel.id !== channelToRemove.id;
+        });
         this.setState({ starredChannels: filteredChannels });
       });
   };
 
-  setActiveChannel = (channel) => {
+  setActiveChannel = channel => {
     this.setState({ activeChannel: channel.id });
   };
 
-  changeChannel = (channel) => {
+  changeChannel = channel => {
     this.setActiveChannel(channel);
     this.props.setCurrentChannel(channel);
     this.props.setPrivateChannel(false);
   };
 
-  displayChannels = (starredChannels) =>
+  displayChannels = starredChannels =>
     starredChannels.length > 0 &&
-    starredChannels.map((channel) => (
+    starredChannels.map(channel => (
       <Menu.Item
         key={channel.id}
         onClick={() => this.changeChannel(channel)}

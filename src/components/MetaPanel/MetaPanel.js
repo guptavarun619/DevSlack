@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Segment,
-  Accordion,
-  Header,
-  Icon,
-  Image,
-  List
-} from "semantic-ui-react";
+import { Segment, Accordion, Header, Icon, Image, List } from "semantic-ui-react";
 
 class MetaPanel extends Component {
   state = {
@@ -22,10 +15,9 @@ class MetaPanel extends Component {
     this.setState({ activeIndex: newIndex });
   };
 
-  formatCount = (num) =>
-    num > 1 || num === 0 ? `${num} posts` : `${num} post`;
+  formatCount = num => (num > 1 || num === 0 ? `${num} posts` : `${num} post`);
 
-  displayTopPosters = (posts) =>
+  displayTopPosters = posts =>
     Object.entries(posts)
       .sort((a, b) => b[1] - a[1])
       .map(([key, val], i) => (
@@ -51,11 +43,7 @@ class MetaPanel extends Component {
           About # {channel && channel.name}
         </Header>
         <Accordion styled attached="true">
-          <Accordion.Title
-            active={activeIndex === 0}
-            index={0}
-            onClick={this.setActiveIndex}
-          >
+          <Accordion.Title active={activeIndex === 0} index={0} onClick={this.setActiveIndex}>
             <Icon name="dropdown" />
             <Icon name="info circle" />
             Channel Details
@@ -64,11 +52,7 @@ class MetaPanel extends Component {
             {channel && channel.details}
           </Accordion.Content>
 
-          <Accordion.Title
-            active={activeIndex === 1}
-            index={1}
-            onClick={this.setActiveIndex}
-          >
+          <Accordion.Title active={activeIndex === 1} index={1} onClick={this.setActiveIndex}>
             <Icon name="dropdown" />
             <Icon name="user circle" />
             Top Posters
@@ -77,11 +61,7 @@ class MetaPanel extends Component {
             <List>{userPosts && this.displayTopPosters(userPosts)}</List>
           </Accordion.Content>
 
-          <Accordion.Title
-            active={activeIndex === 2}
-            index={2}
-            onClick={this.setActiveIndex}
-          >
+          <Accordion.Title active={activeIndex === 2} index={2} onClick={this.setActiveIndex}>
             <Icon name="dropdown" />
             <Icon name="pencil alternate" />
             Created By

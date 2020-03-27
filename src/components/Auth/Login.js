@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 import firebase from "../../firebase";
-import {
-  Grid,
-  Form,
-  Segment,
-  Button,
-  Header,
-  Message,
-  Icon
-} from "semantic-ui-react";
+import { Grid, Form, Segment, Button, Header, Message, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 class Login extends Component {
@@ -19,24 +11,23 @@ class Login extends Component {
     loading: false
   };
 
-  displayErrors = (errors) =>
-    errors.map((error, i) => <p key={i}>{error.message}</p>);
+  displayErrors = errors => errors.map((error, i) => <p key={i}>{error.message}</p>);
 
-  handleChange = (event) => {
+  handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault();
     if (this.isFormValid(this.state)) {
       this.setState({ errors: [], loading: true });
       firebase
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then((signedInUser) => {
+        .then(signedInUser => {
           console.log(signedInUser);
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
           this.setState({
             errors: this.state.errors.concat(err),
@@ -49,11 +40,7 @@ class Login extends Component {
   isFormValid = ({ email, password }) => email && password;
 
   handleInputError = (errors, inputName) => {
-    return errors.some((error) =>
-      error.message.toLowerCase().includes(inputName)
-    )
-      ? "error"
-      : "";
+    return errors.some(error => error.message.toLowerCase().includes(inputName)) ? "error" : "";
   };
 
   render() {

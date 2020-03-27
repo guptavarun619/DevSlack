@@ -8,7 +8,7 @@ class FileModal extends Component {
     authorized: ["image/jpeg", "image/png"]
   };
 
-  addFile = (event) => {
+  addFile = event => {
     const file = event.target.files[0];
     if (file) {
       this.setState({ file });
@@ -29,8 +29,7 @@ class FileModal extends Component {
     }
   };
 
-  isAuthorized = (filename) =>
-    this.state.authorized.includes(mime.lookup(filename));
+  isAuthorized = filename => this.state.authorized.includes(mime.lookup(filename));
 
   clearFile = () => this.setState({ file: null });
 

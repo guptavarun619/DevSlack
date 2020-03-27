@@ -1,7 +1,7 @@
 import * as actionTypes from "./types";
 
 // User Actions
-export const setUser = (user) => {
+export const setUser = user => {
   return {
     type: actionTypes.SET_USER,
     payload: {
@@ -17,7 +17,7 @@ export const clearUser = () => {
 };
 
 // Channel Actions
-export const setCurrentChannel = (channel) => {
+export const setCurrentChannel = channel => {
   return {
     type: actionTypes.SET_CURRENT_CHANNEL,
     payload: {
@@ -26,7 +26,7 @@ export const setCurrentChannel = (channel) => {
   };
 };
 
-export const setPrivateChannel = (isPrivateChannel) => {
+export const setPrivateChannel = isPrivateChannel => {
   return {
     type: actionTypes.SET_PRIVATE_CHANNEL,
     payload: {
@@ -35,7 +35,7 @@ export const setPrivateChannel = (isPrivateChannel) => {
   };
 };
 
-export const setUserPosts = (userPosts) => {
+export const setUserPosts = userPosts => {
   return {
     type: actionTypes.SET_USER_POSTS,
     payload: {

@@ -40,7 +40,7 @@ class Messages extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.messageEnd) {
+    if (this.messagesEnd) {
       this.scrollToBottom();
     }
   }
@@ -49,14 +49,14 @@ class Messages extends Component {
     this.messagesEnd.scrollIntoView({ behavior: "smooth" });
   };
 
-  addListeners = (channelId) => {
+  addListeners = channelId => {
     this.addMessageListener(channelId);
     this.addTypingListeners(channelId);
   };
 
-  addTypingListeners = (channelId) => {
+  addTypingListeners = channelId => {
     let typingUsers = [];
-    this.state.typingRef.child(channelId).on("child_added", (snap) => {
+    this.state.typingRef.child(channelId).on("child_added", snap => {
       if (snap.key !== this.state.user.uid) {
         typingUsers = typingUsers.concat({
           id: snap.key,
@@ -66,21 +66,21 @@ class Messages extends Component {
       }
     });
 
-    this.state.typingRef.child(channelId).on("child_removed", (snap) => {
-      const index = typingUsers.findIndex((user) => user.id === snap.key);
+    this.state.typingRef.child(channelId).on("child_removed", snap => {
+      const index = typingUsers.findIndex(user => user.id === snap.key);
       if (index !== -1) {
-        typingUsers = typingUsers.filter((user) => user.id !== snap.key);
+        typingUsers = typingUsers.filter(user => user.id !== snap.key);
         this.setState({ typingUsers });
       }
     });
 
-    this.state.connectedRef.on("value", (snap) => {
+    this.state.connectedRef.on("value", snap => {
       if (snap.val() === true) {
         this.state.typingRef
           .child(channelId)
           .child(this.state.user.uid)
           .onDisconnect()
-          .remove((err) => {
+          .remove(err => {
             if (err !== null) {
               console.error(err);
             }
@@ -89,10 +89,10 @@ class Messages extends Component {
     });
   };
 
-  addMessageListener = (channelId) => {
+  addMessageListener = channelId => {
     let loadedMessages = [];
     const ref = this.getMessagesRef();
-    ref.child(channelId).on("child_added", (snap) => {
+    ref.child(channelId).on("child_added", snap => {
       loadedMessages.push(snap.val());
       this.setState({
         messages: loadedMessages,
@@ -108,7 +108,7 @@ class Messages extends Component {
       .child(userId)
       .child("starred")
       .once("value")
-      .then((data) => {
+      .then(data => {
         if (data.val() !== null) {
           const channelIds = Object.keys(data.val());
           const prevStarred = channelIds.includes(channelId);
@@ -124,7 +124,7 @@ class Messages extends Component {
 
   handleStar = () => {
     this.setState(
-      (prevState) => ({
+      prevState => ({
         isChannelStarred: !prevState.isChannelStarred
       }),
       () => this.starChannel()
@@ -147,7 +147,7 @@ class Messages extends Component {
       this.state.usersRef
         .child(`${this.state.user.uid}/starred`)
         .child(this.state.channel.id)
-        .remove((err) => {
+        .remove(err => {
           if (err !== null) {
             console.error(err);
           }
@@ -155,7 +155,7 @@ class Messages extends Component {
     }
   };
 
-  handleSearchChange = (event) => {
+  handleSearchChange = event => {
     this.setState(
       {
         searchTerm: event.target.value,
@@ -169,10 +169,7 @@ class Messages extends Component {
     const channelMessages = [...this.state.messages];
     const regex = new RegExp(this.state.searchTerm, "gi");
     const searchResults = channelMessages.reduce((acc, message) => {
-      if (
-        (message.content && message.content.match(regex)) ||
-        message.user.name.match(regex)
-      ) {
+      if ((message.content && message.content.match(regex)) || message.user.name.match(regex)) {
         acc.push(message);
       }
       return acc;
@@ -181,7 +178,7 @@ class Messages extends Component {
     setTimeout(() => this.setState({ searchLoading: false }), 500);
   };
 
-  countUniqueUsers = (messages) => {
+  countUniqueUsers = messages => {
     const uniqueUsers = messages.reduce((acc, message) => {
       if (!acc.includes(message.user.name)) {
         acc.push(message.user.name);
@@ -193,7 +190,7 @@ class Messages extends Component {
     this.setState({ numUniqueUsers });
   };
 
-  countUserPosts = (messages) => {
+  countUserPosts = messages => {
     let userPosts = messages.reduce((acc, message) => {
       if (message.user.name in acc) {
         acc[message.user.name].count += 1;
@@ -208,34 +205,25 @@ class Messages extends Component {
     this.props.setUserPosts(userPosts);
   };
 
-  displayMessages = (messages) =>
+  displayMessages = messages =>
     messages.length > 0 &&
-    messages.map((message) => (
-      <Message
-        key={message.timestamp}
-        message={message}
-        user={this.state.user}
-      />
+    messages.map(message => (
+      <Message key={message.timestamp} message={message} user={this.state.user} />
     ));
 
-  displayChannelName = (channel) => {
-    return channel
-      ? `${this.state.privateChannel ? "@" : "#"}${channel.name}`
-      : "";
+  displayChannelName = channel => {
+    return channel ? `${this.state.privateChannel ? "@" : "#"}${channel.name}` : "";
   };
 
-  displayTypingUsers = (users) =>
+  displayTypingUsers = users =>
     users.length > 0 &&
-    users.map((user) => (
-      <div
-        style={{ display: "flex", alignItems: "center", marginBottom: "0.2em" }}
-        key={user.id}
-      >
+    users.map(user => (
+      <div style={{ display: "flex", alignItems: "center", marginBottom: "0.2em" }} key={user.id}>
         <span className="user__typing">{user.name} is typing</span> <Typing />
       </div>
     ));
 
-  displayMessageSkeleton = (loading) =>
+  displayMessageSkeleton = loading =>
     loading ? (
       <Fragment>
         {[...Array(10)].map((_, i) => (
@@ -274,11 +262,9 @@ class Messages extends Component {
         <Segment>
           <Comment.Group className="messages">
             {this.displayMessageSkeleton(messagesLoading)}
-            {searchTerm
-              ? this.displayMessages(searchResults)
-              : this.displayMessages(messages)}
+            {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
             {this.displayTypingUsers(typingUsers)}
-            <div ref={(node) => (this.messagesEnd = node)} />
+            <div ref={node => (this.messagesEnd = node)} />
           </Comment.Group>
         </Segment>
 

@@ -28,11 +28,15 @@ class MessageForm extends Component {
 
   closeModal = () => this.setState({ modal: false });
 
-  handleChange = (event) => {
+  handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleKeyDown = () => {
+  handleKeyDown = event => {
+    if (event.ctrlKey && event.keyCode === 13) {
+      this.sendMessage();
+    }
+
     const { message, typingRef, channel, user } = this.state;
 
     if (message) {
@@ -52,15 +56,15 @@ class MessageForm extends Component {
     this.setState({ emojiPicker: !this.state.emojiPicker });
   };
 
-  handlelAddEmoji = (emoji) => {
+  handleAddEmoji = emoji => {
     const oldMessage = this.state.message;
     const newMessage = this.colonToUnicode(` ${oldMessage} ${emoji.colons} `);
     this.setState({ message: newMessage, emojiPicker: false });
     setTimeout(() => this.messageInputRef.focus(), 0);
   };
 
-  colonToUnicode = (message) => {
-    return message.replace(/:[A-Za-z0-9_+-]+:/g, (x) => {
+  colonToUnicode = message => {
+    return message.replace(/:[A-Za-z0-9_+-]+:/g, x => {
       x = x.replace(/:/g, "");
       let emoji = emojiIndex.emojis[x];
       if (typeof emoji !== "undefined") {
@@ -108,7 +112,7 @@ class MessageForm extends Component {
             .child(user.uid)
             .remove();
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
           this.setState({
             loading: false,
@@ -143,13 +147,11 @@ class MessageForm extends Component {
       () => {
         this.state.uploadTask.on(
           "state_changed",
-          (snap) => {
-            const percentUploaded = Math.round(
-              (snap.bytesTransferred / snap.totalBytes) * 100
-            );
+          snap => {
+            const percentUploaded = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
             this.setState({ percentUploaded });
           },
-          (err) => {
+          err => {
             console.error(err);
             this.setState({
               errors: this.state.errors.concat(err),
@@ -160,10 +162,10 @@ class MessageForm extends Component {
           () => {
             this.state.uploadTask.snapshot.ref
               .getDownloadURL()
-              .then((downloadUrl) => {
+              .then(downloadUrl => {
                 this.sendFileMessage(downloadUrl, ref, pathToUpload);
               })
-              .catch((err) => {
+              .catch(err => {
                 console.error(err);
                 this.setState({
                   errors: this.state.errors.concat(err),
@@ -185,7 +187,7 @@ class MessageForm extends Component {
       .then(() => {
         this.setState({ uploadState: "done" });
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         this.setState({
           errors: this.state.errors.concat(err)
@@ -220,7 +222,7 @@ class MessageForm extends Component {
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
           value={message}
-          ref={(node) => (this.messageInputRef = node)}
+          ref={node => (this.messageInputRef = node)}
           style={{ marginBottom: "0.7em" }}
           label={
             <Button
@@ -230,11 +232,7 @@ class MessageForm extends Component {
             />
           }
           labelPosition="left"
-          className={
-            errors.some((error) => error.message.includes("message"))
-              ? "error"
-              : ""
-          }
+          className={errors.some(error => error.message.includes("message")) ? "error" : ""}
           placeholder="Write your message"
         />
         <Button.Group icon widths="2">
@@ -255,15 +253,8 @@ class MessageForm extends Component {
             icon="cloud upload"
           />
         </Button.Group>
-        <FileModal
-          modal={modal}
-          closeModal={this.closeModal}
-          uploadFile={this.uploadFile}
-        />
-        <ProgressBar
-          uploadState={uploadState}
-          percentUploaded={percentUploaded}
-        />
+        <FileModal modal={modal} closeModal={this.closeModal} uploadFile={this.uploadFile} />
+        <ProgressBar uploadState={uploadState} percentUploaded={percentUploaded} />
       </Segment>
     );
   }

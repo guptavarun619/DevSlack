@@ -1,16 +1,7 @@
 import React, { Component } from "react";
 import firebase from "../../firebase";
 import AvatarEditor from "react-avatar-editor";
-import {
-  Grid,
-  Header,
-  Icon,
-  Dropdown,
-  Image,
-  Modal,
-  Input,
-  Button
-} from "semantic-ui-react";
+import { Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
 
 class UserPanel extends Component {
   state = {
@@ -58,11 +49,9 @@ class UserPanel extends Component {
     storageRef
       .child(`avatars/user-${userRef.uid}`)
       .put(blob, metadata)
-      .then((snap) => {
-        snap.ref.getDownloadURL().then((downloadURL) => {
-          this.setState({ uploadedCroppedImage: downloadURL }, () =>
-            this.changeAvatar()
-          );
+      .then(snap => {
+        snap.ref.getDownloadURL().then(downloadURL => {
+          this.setState({ uploadedCroppedImage: downloadURL }, () => this.changeAvatar());
         });
       });
   };
@@ -76,7 +65,7 @@ class UserPanel extends Component {
         console.log("PhotoURL updated");
         this.closeModal();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
 
@@ -86,12 +75,12 @@ class UserPanel extends Component {
       .then(() => {
         console.log("User Avatar Updated");
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
   };
 
-  handleChange = (event) => {
+  handleChange = event => {
     const file = event.target.files[0];
     const reader = new FileReader();
 
@@ -105,7 +94,7 @@ class UserPanel extends Component {
 
   handleCropImage = () => {
     if (this.avatarEditor) {
-      this.avatarEditor.getImageScaledToCanvas().toBlob((blob) => {
+      this.avatarEditor.getImageScaledToCanvas().toBlob(blob => {
         let imageUrl = URL.createObjectURL(blob);
         this.setState({
           croppedImage: imageUrl,
@@ -136,7 +125,7 @@ class UserPanel extends Component {
               <Header.Content>DevSlack</Header.Content>
             </Header>
 
-            {/* User Dropdown */}
+            {/* User Dropdown  */}
             <Header style={{ padding: "0.25em" }} as="h4" inverted>
               <Dropdown
                 trigger={
@@ -166,7 +155,7 @@ class UserPanel extends Component {
                   <Grid.Column className="ui center aligned grid">
                     {previewImage && (
                       <AvatarEditor
-                        ref={(node) => (this.avatarEditor = node)}
+                        ref={node => (this.avatarEditor = node)}
                         image={previewImage}
                         width={120}
                         height={120}
@@ -190,11 +179,7 @@ class UserPanel extends Component {
             </Modal.Content>
             <Modal.Actions>
               {croppedImage && (
-                <Button
-                  color="green"
-                  inverted
-                  onClick={this.uploadCroppedImage}
-                >
+                <Button color="green" inverted onClick={this.uploadCroppedImage}>
                   <Icon name="save" /> Change Avatar
                 </Button>
               )}
