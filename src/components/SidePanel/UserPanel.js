@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 import firebase from "../../firebase";
 import AvatarEditor from "react-avatar-editor";
-import { Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
+import {
+  Grid,
+  Header,
+  Icon,
+  Dropdown,
+  Image,
+  Modal,
+  Input,
+  Button
+} from "semantic-ui-react";
 
 class UserPanel extends Component {
   state = {
@@ -47,11 +56,13 @@ class UserPanel extends Component {
     const { storageRef, userRef, blob, metadata } = this.state;
 
     storageRef
-      .child(`avatars/user-${userRef.uid}`)
+      .child(`avatars/users/${userRef.uid}`)
       .put(blob, metadata)
       .then(snap => {
         snap.ref.getDownloadURL().then(downloadURL => {
-          this.setState({ uploadedCroppedImage: downloadURL }, () => this.changeAvatar());
+          this.setState({ uploadedCroppedImage: downloadURL }, () =>
+            this.changeAvatar()
+          );
         });
       });
   };
@@ -179,7 +190,11 @@ class UserPanel extends Component {
             </Modal.Content>
             <Modal.Actions>
               {croppedImage && (
-                <Button color="green" inverted onClick={this.uploadCroppedImage}>
+                <Button
+                  color="green"
+                  inverted
+                  onClick={this.uploadCroppedImage}
+                >
                   <Icon name="save" /> Change Avatar
                 </Button>
               )}

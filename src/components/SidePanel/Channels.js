@@ -2,7 +2,15 @@ import React, { Component, Fragment } from "react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
 import { setCurrentChannel, setPrivateChannel } from "../../actions";
-import { Menu, Icon, Modal, Form, Input, Button, Label } from "semantic-ui-react";
+import {
+  Menu,
+  Icon,
+  Modal,
+  Form,
+  Input,
+  Button,
+  Label
+} from "semantic-ui-react";
 
 class Channels extends Component {
   state = {
@@ -40,7 +48,12 @@ class Channels extends Component {
   addNotificationListener = channelId => {
     this.state.messagesRef.child(channelId).on("value", snap => {
       if (this.state.channel) {
-        this.handleNotifications(channelId, this.state.channel.id, this.state.notifications, snap);
+        this.handleNotifications(
+          channelId,
+          this.state.channel.id,
+          this.state.notifications,
+          snap
+        );
       }
     });
   };
@@ -48,7 +61,9 @@ class Channels extends Component {
   handleNotifications = (channelId, currentChannelId, notifications, snap) => {
     let lastTotal = 0;
 
-    let index = notifications.findIndex(notification => notification.id === channelId);
+    let index = notifications.findIndex(
+      notification => notification.id === channelId
+    );
 
     if (index !== -1) {
       if (channelId !== currentChannelId) {
@@ -73,6 +88,9 @@ class Channels extends Component {
 
   removeListeners = () => {
     this.state.channelsRef.off();
+    this.state.channels.forEach(channel => {
+      this.state.messagesRef.child(channel.id).off();
+    });
   };
 
   setFirstChannel = () => {
@@ -143,7 +161,9 @@ class Channels extends Component {
 
     if (index !== -1) {
       let updatedNotifications = [...this.state.notifications];
-      updatedNotifications[index].total = this.state.notifications[index].lastKnownTotal;
+      updatedNotifications[index].total = this.state.notifications[
+        index
+      ].lastKnownTotal;
       updatedNotifications[index].count = 0;
       this.setState({ notifications: updatedNotifications });
     }
@@ -182,7 +202,8 @@ class Channels extends Component {
       </Menu.Item>
     ));
 
-  isFormValid = ({ channelName, channelDetails }) => channelName && channelDetails;
+  isFormValid = ({ channelName, channelDetails }) =>
+    channelName && channelDetails;
 
   openModal = () => this.setState({ modal: true });
 
@@ -242,4 +263,6 @@ class Channels extends Component {
   }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel })(Channels);
+export default connect(null, { setCurrentChannel, setPrivateChannel })(
+  Channels
+);

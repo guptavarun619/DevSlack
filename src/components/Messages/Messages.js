@@ -27,23 +27,49 @@ class Messages extends Component {
     searchResults: [],
     typingRef: firebase.database().ref("typing"),
     typingUsers: [],
-    connectedRef: firebase.database().ref(".info/connected")
+    connectedRef: firebase.database().ref(".info/connected"),
+    listeners: []
   };
 
   componentDidMount() {
-    const { channel, user } = this.state;
+    const { channel, user, listeners } = this.state;
 
     if (channel && user) {
+      this.removeListeners(listeners);
       this.addListeners(channel.id);
       this.addUserStarsListener(channel.id, user.uid);
     }
   }
+
+  componentWillUnmount() {
+    this.removeListeners(this.state.listeners);
+    this.state.connectedRef.off();
+  }
+
+  removeListeners = listeners => {
+    listeners.forEach(listener => {
+      listener.ref.child(listener.id).off(listener.event);
+    });
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.messagesEnd) {
       this.scrollToBottom();
     }
   }
+
+  addToListeners = (id, ref, event) => {
+    const index = this.state.listeners.findIndex(listener => {
+      return (
+        listener.id === id && listener.ref === ref && listener.event === event
+      );
+    });
+
+    if (index === -1) {
+      const newListener = { id, ref, event };
+      this.setState({ listeners: this.state.listeners.concat(newListener) });
+    }
+  };
 
   scrollToBottom = () => {
     this.messagesEnd.scrollIntoView({ behavior: "smooth" });
@@ -65,6 +91,7 @@ class Messages extends Component {
         this.setState({ typingUsers });
       }
     });
+    this.addToListeners(channelId, this.state.typingRef, "child_added");
 
     this.state.typingRef.child(channelId).on("child_removed", snap => {
       const index = typingUsers.findIndex(user => user.id === snap.key);
@@ -73,6 +100,7 @@ class Messages extends Component {
         this.setState({ typingUsers });
       }
     });
+    this.addToListeners(channelId, this.state.typingRef, "child_removed");
 
     this.state.connectedRef.on("value", snap => {
       if (snap.val() === true) {
@@ -101,6 +129,7 @@ class Messages extends Component {
       this.countUniqueUsers(loadedMessages);
       this.countUserPosts(loadedMessages);
     });
+    this.addToListeners(channelId, ref, "child_added");
   };
 
   addUserStarsListener = (channelId, userId) => {
@@ -169,7 +198,10 @@ class Messages extends Component {
     const channelMessages = [...this.state.messages];
     const regex = new RegExp(this.state.searchTerm, "gi");
     const searchResults = channelMessages.reduce((acc, message) => {
-      if ((message.content && message.content.match(regex)) || message.user.name.match(regex)) {
+      if (
+        (message.content && message.content.match(regex)) ||
+        message.user.name.match(regex)
+      ) {
         acc.push(message);
       }
       return acc;
@@ -208,17 +240,26 @@ class Messages extends Component {
   displayMessages = messages =>
     messages.length > 0 &&
     messages.map(message => (
-      <Message key={message.timestamp} message={message} user={this.state.user} />
+      <Message
+        key={message.timestamp}
+        message={message}
+        user={this.state.user}
+      />
     ));
 
   displayChannelName = channel => {
-    return channel ? `${this.state.privateChannel ? "@" : "#"}${channel.name}` : "";
+    return channel
+      ? `${this.state.privateChannel ? "@" : "#"}${channel.name}`
+      : "";
   };
 
   displayTypingUsers = users =>
     users.length > 0 &&
     users.map(user => (
-      <div style={{ display: "flex", alignItems: "center", marginBottom: "0.2em" }} key={user.id}>
+      <div
+        style={{ display: "flex", alignItems: "center", marginBottom: "0.2em" }}
+        key={user.id}
+      >
         <span className="user__typing">{user.name} is typing</span> <Typing />
       </div>
     ));
@@ -262,7 +303,9 @@ class Messages extends Component {
         <Segment>
           <Comment.Group className="messages">
             {this.displayMessageSkeleton(messagesLoading)}
-            {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
+            {searchTerm
+              ? this.displayMessages(searchResults)
+              : this.displayMessages(messages)}
             {this.displayTypingUsers(typingUsers)}
             <div ref={node => (this.messagesEnd = node)} />
           </Comment.Group>

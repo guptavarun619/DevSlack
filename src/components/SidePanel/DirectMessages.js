@@ -20,6 +20,16 @@ class DirectMessages extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.removeListeners();
+  }
+
+  removeListeners = () => {
+    this.state.usersRef.off();
+    this.state.presenceRef.off();
+    this.state.presenceRef.off();
+  };
+
   addListeners = currentUserUid => {
     let loadedUsers = [];
     this.state.usersRef.on("child_added", snap => {
@@ -82,7 +92,9 @@ class DirectMessages extends Component {
 
   getChannelId = userId => {
     const currentUserId = this.state.user.uid;
-    return userId < currentUserId ? `${userId}/${currentUserId}` : `${currentUserId}/${userId}`;
+    return userId < currentUserId
+      ? `${userId}/${currentUserId}`
+      : `${currentUserId}/${userId}`;
   };
 
   setActiveChannel = userId => {
@@ -107,7 +119,11 @@ class DirectMessages extends Component {
             onClick={() => this.changeChannel(user)}
             style={{ opacity: 0.7, fontStyle: "italic" }}
           >
-            <Icon name="circle" color={this.isUserOnline(user) ? "green" : "red"} />@ {user.name}
+            <Icon
+              name="circle"
+              color={this.isUserOnline(user) ? "green" : "red"}
+            />
+            @ {user.name}
           </Menu.Item>
         ))}
       </Menu.Menu>
@@ -115,4 +131,6 @@ class DirectMessages extends Component {
   }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel })(DirectMessages);
+export default connect(null, { setCurrentChannel, setPrivateChannel })(
+  DirectMessages
+);

@@ -24,6 +24,13 @@ class MessageForm extends Component {
     emojiPicker: false
   };
 
+  componentWillUnmount() {
+    if (this.state.uploadTask !== null) {
+      this.state.uploadTask.cancel();
+      this.setState({ uploadTask: null });
+    }
+  }
+
   openModal = () => this.setState({ modal: true });
 
   closeModal = () => this.setState({ modal: false });
@@ -128,7 +135,7 @@ class MessageForm extends Component {
 
   getPath = () => {
     if (this.props.isPrivateChannel) {
-      return `chat/private-${this.state.channel.id}`;
+      return `chat/private/${this.state.channel.id}`;
     } else {
       return "chat/public";
     }
@@ -148,7 +155,9 @@ class MessageForm extends Component {
         this.state.uploadTask.on(
           "state_changed",
           snap => {
-            const percentUploaded = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+            const percentUploaded = Math.round(
+              (snap.bytesTransferred / snap.totalBytes) * 100
+            );
             this.setState({ percentUploaded });
           },
           err => {
@@ -232,7 +241,11 @@ class MessageForm extends Component {
             />
           }
           labelPosition="left"
-          className={errors.some(error => error.message.includes("message")) ? "error" : ""}
+          className={
+            errors.some(error => error.message.includes("message"))
+              ? "error"
+              : ""
+          }
           placeholder="Write your message"
         />
         <Button.Group icon widths="2">
@@ -253,8 +266,15 @@ class MessageForm extends Component {
             icon="cloud upload"
           />
         </Button.Group>
-        <FileModal modal={modal} closeModal={this.closeModal} uploadFile={this.uploadFile} />
-        <ProgressBar uploadState={uploadState} percentUploaded={percentUploaded} />
+        <FileModal
+          modal={modal}
+          closeModal={this.closeModal}
+          uploadFile={this.uploadFile}
+        />
+        <ProgressBar
+          uploadState={uploadState}
+          percentUploaded={percentUploaded}
+        />
       </Segment>
     );
   }
