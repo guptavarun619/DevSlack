@@ -11,7 +11,7 @@ import {
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
-export class Login extends Component {
+class Login extends Component {
   state = {
     email: "",
     password: "",
@@ -22,7 +22,7 @@ export class Login extends Component {
   displayErrors = (errors) =>
     errors.map((error, i) => <p key={i}>{error.message}</p>);
 
-  handlChange = (event) => {
+  handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
@@ -60,62 +60,60 @@ export class Login extends Component {
     const { email, password, errors, loading } = this.state;
 
     return (
-      <div>
-        <Grid textAlign="center" verticalAlign="middle" className="app">
-          <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as="h1" icon color="violet" textAlign="center">
-              <Icon name="code branch" color="violet" />
-              Login for DevSlack
-            </Header>
-            <Form onSubmit={this.handleSubmit} size="large">
-              <Segment stacked>
-                <Form.Input
-                  fluid
-                  name="email"
-                  icon="mail"
-                  iconPosition="left"
-                  placeholder="Email Address"
-                  onChange={this.handlChange}
-                  value={email}
-                  className={this.handleInputError(errors, "email")}
-                  type="email"
-                />
+      <Grid textAlign="center" verticalAlign="middle" className="app">
+        <Grid.Column style={{ maxWidth: 450 }}>
+          <Header as="h1" icon color="violet" textAlign="center">
+            <Icon name="code branch" color="violet" />
+            Login for DevSlack
+          </Header>
+          <Form onSubmit={this.handleSubmit} size="large">
+            <Segment stacked>
+              <Form.Input
+                fluid
+                name="email"
+                icon="mail"
+                iconPosition="left"
+                placeholder="Email Address"
+                onChange={this.handleChange}
+                value={email}
+                className={this.handleInputError(errors, "email")}
+                type="email"
+              />
 
-                <Form.Input
-                  fluid
-                  name="password"
-                  icon="lock"
-                  iconPosition="left"
-                  placeholder="Password"
-                  onChange={this.handlChange}
-                  value={password}
-                  className={this.handleInputError(errors, "too short")}
-                  type="password"
-                />
+              <Form.Input
+                fluid
+                name="password"
+                icon="lock"
+                iconPosition="left"
+                placeholder="Password"
+                onChange={this.handleChange}
+                value={password}
+                className={this.handleInputError(errors, "too short")}
+                type="password"
+              />
 
-                <Button
-                  disabled={loading}
-                  className={loading ? "loading" : ""}
-                  color="violet"
-                  fluid
-                  size="large"
-                >
-                  Submit
-                </Button>
-              </Segment>
-            </Form>
-            {errors.length > 0 && (
-              <Message error>
-                <h3>Error</h3>
-                {this.displayErrors(errors)}
-              </Message>
-            )}
-            <Message>
-              Don't have an account? <Link to="/register">Register</Link>{" "}
+              <Button
+                disabled={loading}
+                className={loading ? "loading" : ""}
+                color="violet"
+                fluid
+                size="large"
+              >
+                Submit
+              </Button>
+            </Segment>
+          </Form>
+          {errors.length > 0 && (
+            <Message error>
+              <h3>Error</h3>
+              {this.displayErrors(errors)}
             </Message>
-          </Grid.Column>
-        </Grid>
-      </div>
+          )}
+          <Message>
+            Don't have an account? <Link to="/register">Register</Link>{" "}
+          </Message>
+        </Grid.Column>
+      </Grid>
     );
   }
 }

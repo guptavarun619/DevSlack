@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import firebase from "../../firebase";
+import md5 from "md5";
 import {
   Grid,
   Form,
@@ -10,9 +11,8 @@ import {
   Icon
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import md5 from "md5";
 
-export class Register extends Component {
+class Register extends Component {
   state = {
     username: "",
     email: "",
@@ -20,7 +20,7 @@ export class Register extends Component {
     passwordConfirmation: "",
     errors: [],
     loading: false,
-    userRef: firebase.database().ref("users")
+    usersRef: firebase.database().ref("users")
   };
 
   isFormValid = () => {
@@ -112,7 +112,7 @@ export class Register extends Component {
   };
 
   saveUser = (createdUser) => {
-    return this.state.userRef.child(createdUser.user.uid).set({
+    return this.state.usersRef.child(createdUser.user.uid).set({
       name: createdUser.user.displayName,
       avatar: createdUser.user.photoURL
     });
@@ -137,85 +137,83 @@ export class Register extends Component {
     } = this.state;
 
     return (
-      <div>
-        <Grid textAlign="center" verticalAlign="middle" className="app">
-          <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as="h1" icon color="orange" textAlign="center">
-              <Icon name="puzzle piece" color="orange" />
-              Register for DevSlack
-            </Header>
-            <Form onSubmit={this.handleSubmit} size="large">
-              <Segment stacked>
-                <Form.Input
-                  fluid
-                  name="username"
-                  icon="user"
-                  iconPosition="left"
-                  placeholder="Username"
-                  onChange={this.handlChange}
-                  value={username}
-                  type="text"
-                />
+      <Grid textAlign="center" verticalAlign="middle" className="app">
+        <Grid.Column style={{ maxWidth: 450 }}>
+          <Header as="h1" icon color="orange" textAlign="center">
+            <Icon name="puzzle piece" color="orange" />
+            Register for DevSlack
+          </Header>
+          <Form onSubmit={this.handleSubmit} size="large">
+            <Segment stacked>
+              <Form.Input
+                fluid
+                name="username"
+                icon="user"
+                iconPosition="left"
+                placeholder="Username"
+                onChange={this.handleChange}
+                value={username}
+                type="text"
+              />
 
-                <Form.Input
-                  fluid
-                  name="email"
-                  icon="mail"
-                  iconPosition="left"
-                  placeholder="Email Address"
-                  onChange={this.handlChange}
-                  value={email}
-                  className={this.handleInputError(errors, "email")}
-                  type="email"
-                />
+              <Form.Input
+                fluid
+                name="email"
+                icon="mail"
+                iconPosition="left"
+                placeholder="Email Address"
+                onChange={this.handleChange}
+                value={email}
+                className={this.handleInputError(errors, "email")}
+                type="email"
+              />
 
-                <Form.Input
-                  fluid
-                  name="password"
-                  icon="lock"
-                  iconPosition="left"
-                  placeholder="Password"
-                  onChange={this.handlChange}
-                  value={password}
-                  className={this.handleInputError(errors, "too short")}
-                  type="password"
-                />
+              <Form.Input
+                fluid
+                name="password"
+                icon="lock"
+                iconPosition="left"
+                placeholder="Password"
+                onChange={this.handleChange}
+                value={password}
+                className={this.handleInputError(errors, "too short")}
+                type="password"
+              />
 
-                <Form.Input
-                  fluid
-                  name="passwordConfirmation"
-                  icon="repeat"
-                  iconPosition="left"
-                  placeholder="Password Confirmation"
-                  onChange={this.handlChange}
-                  value={passwordConfirmation}
-                  className={this.handleInputError(errors, "match")}
-                  type="password"
-                />
+              <Form.Input
+                fluid
+                name="passwordConfirmation"
+                icon="repeat"
+                iconPosition="left"
+                placeholder="Password Confirmation"
+                onChange={this.handleChange}
+                value={passwordConfirmation}
+                className={this.handleInputError(errors, "match")}
+                type="password"
+              />
 
-                <Button
-                  disabled={loading}
-                  className={loading ? "loading" : ""}
-                  color="orange"
-                  fluid
-                  size="large"
-                >
-                  Submit
-                </Button>
-              </Segment>
-            </Form>
-            {errors.length > 0 && (
-              <Message error>
-                <h3>Error</h3>
-                {this.displayErrors(errors)}
-              </Message>
-            )}
-            <Message>
-              Already a user? <Link to="/login">Login</Link>{" "}
+              <Button
+                disabled={loading}
+                className={loading ? "loading" : ""}
+                color="orange"
+                fluid
+                size="large"
+              >
+                Submit
+              </Button>
+            </Segment>
+          </Form>
+          {errors.length > 0 && (
+            <Message error>
+              <h3>Error</h3>
+              {this.displayErrors(errors)}
             </Message>
-          </Grid.Column>
-        </Grid>
-      </div>
+          )}
+          <Message>
+            Already a user? <Link to="/login">Login</Link>{" "}
+          </Message>
+        </Grid.Column>
+      </Grid>
     );
   }
 }

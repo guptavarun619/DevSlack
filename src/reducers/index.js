@@ -3,8 +3,7 @@ import * as actionTypes from "../actions/types";
 
 const initialUserState = {
   currentUser: null,
-  isLoading: true,
-  userPosts: null
+  isLoading: true
 };
 
 const user_reducer = (state = initialUserState, action) => {
@@ -26,7 +25,8 @@ const user_reducer = (state = initialUserState, action) => {
 
 const initialChannelState = {
   currentChannel: null,
-  isPrivateChannel: false
+  isPrivateChannel: false,
+  userPosts: null
 };
 
 const channel_reducer = (state = initialChannelState, action) => {

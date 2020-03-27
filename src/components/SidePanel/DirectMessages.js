@@ -64,7 +64,7 @@ class DirectMessages extends Component {
       }
       return acc.concat(user);
     }, []);
-    this.setState({ user: updatedUsers });
+    this.setState({ users: updatedUsers });
   };
 
   isUserOnline = (user) => user.status === "online";
@@ -84,7 +84,7 @@ class DirectMessages extends Component {
     const currentUserId = this.state.user.uid;
     return userId < currentUserId
       ? `${userId}/${currentUserId}`
-      : `${currentUserId}/${userId}/`;
+      : `${currentUserId}/${userId}`;
   };
 
   setActiveChannel = (userId) => {
@@ -93,6 +93,7 @@ class DirectMessages extends Component {
 
   render() {
     const { users, activeChannel } = this.state;
+
     return (
       <Menu.Menu className="menu">
         <Menu.Item>

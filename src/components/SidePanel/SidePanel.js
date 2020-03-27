@@ -6,9 +6,10 @@ import Channels from "./Channels";
 import DirectMessages from "./DirectMessages";
 import Starred from "./Starred";
 
-export class SidePanel extends Component {
+class SidePanel extends Component {
   render() {
     const { currentUser, primaryColor } = this.props;
+
     return (
       <Menu
         size="large"

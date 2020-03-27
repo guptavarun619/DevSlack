@@ -22,6 +22,7 @@ class Channels extends Component {
     channelDetails: "",
     channelsRef: firebase.database().ref("channels"),
     messagesRef: firebase.database().ref("messages"),
+    typingRef: firebase.database().ref("typing"),
     notifications: [],
     modal: false,
     firstLoad: true
@@ -140,13 +141,17 @@ class Channels extends Component {
 
   changeChannel = (channel) => {
     this.setActiveChannel(channel);
-    this.clearNotification();
+    this.state.typingRef
+      .child(this.state.channel.id)
+      .child(this.state.user.uid)
+      .remove();
+    this.clearNotifications();
     this.props.setCurrentChannel(channel);
     this.props.setPrivateChannel(false);
     this.setState({ channel });
   };
 
-  clearNotification = () => {
+  clearNotifications = () => {
     let index = this.state.notifications.findIndex(
       (notification) => notification.id === this.state.channel.id
     );
@@ -215,6 +220,7 @@ class Channels extends Component {
           </Menu.Item>
           {this.displayChannels(channels)}
         </Menu.Menu>
+
         {/* Add Channel Modal */}
         <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a Channel</Modal.Header>
@@ -239,11 +245,11 @@ class Channels extends Component {
               </Form.Field>
             </Form>
           </Modal.Content>
+
           <Modal.Actions>
             <Button color="green" inverted onClick={this.handleSubmit}>
               <Icon name="checkmark" /> Add
             </Button>
-
             <Button color="red" inverted onClick={this.closeModal}>
               <Icon name="remove" /> Cancel
             </Button>

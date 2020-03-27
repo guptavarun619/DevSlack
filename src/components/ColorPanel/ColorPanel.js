@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import firebase from "../../firebase";
 import { connect } from "react-redux";
 import { setColors } from "../../actions";
 import { SliderPicker } from "react-color";
@@ -13,9 +14,7 @@ import {
   Segment
 } from "semantic-ui-react";
 
-import firebase from "../../firebase";
-
-export class ColorPanel extends Component {
+class ColorPanel extends Component {
   state = {
     modal: false,
     primary: "",
@@ -35,7 +34,6 @@ export class ColorPanel extends Component {
     let userColors = [];
     this.state.usersRef.child(`${userId}/colors`).on("child_added", (snap) => {
       userColors.unshift(snap.val());
-      // console.log(userColors);
       this.setState({ userColors });
     });
   };
@@ -59,7 +57,7 @@ export class ColorPanel extends Component {
         secondary
       })
       .then(() => {
-        console.log("Colors Added");
+        console.log("Colors added");
         this.closeModal();
       })
       .catch((err) => console.error(err));
@@ -78,7 +76,7 @@ export class ColorPanel extends Component {
             <div
               className="color__overlay"
               style={{ background: color.secondary }}
-            ></div>
+            />
           </div>
         </div>
       </Fragment>
@@ -104,7 +102,7 @@ export class ColorPanel extends Component {
         <Button icon="add" size="small" color="blue" onClick={this.openModal} />
         {this.displayUserColors(userColors)}
 
-        {/* Color Picker */}
+        {/* Color Picker Modal */}
         <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Choose App Colors</Modal.Header>
           <Modal.Content>
@@ -125,11 +123,10 @@ export class ColorPanel extends Component {
             </Segment>
           </Modal.Content>
           <Modal.Actions>
-            <Button color="green" onClick={this.handleSaveColors} inverted>
+            <Button color="green" inverted onClick={this.handleSaveColors}>
               <Icon name="checkmark" /> Save Colors
             </Button>
-
-            <Button color="red" onClick={this.closeModal} inverted>
+            <Button color="red" inverted onClick={this.closeModal}>
               <Icon name="remove" /> Cancel
             </Button>
           </Modal.Actions>

@@ -39,7 +39,7 @@ class FileModal extends Component {
 
     return (
       <Modal basic open={modal} onClose={closeModal}>
-        <Modal.Header>Select and Image File</Modal.Header>
+        <Modal.Header>Select an Image File</Modal.Header>
         <Modal.Content>
           <Input
             onChange={this.addFile}
@@ -53,7 +53,6 @@ class FileModal extends Component {
           <Button onClick={this.sendFile} color="green" inverted>
             <Icon name="checkmark" /> Send
           </Button>
-
           <Button color="red" inverted onClick={closeModal}>
             <Icon name="remove" /> Cancel
           </Button>

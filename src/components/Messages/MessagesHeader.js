@@ -29,6 +29,7 @@ class MessagesHeader extends Component {
           </span>
           <Header.Subheader>{numUniqueUsers}</Header.Subheader>
         </Header>
+
         {/* Channel Search Input */}
         <Header floated="right">
           <Input

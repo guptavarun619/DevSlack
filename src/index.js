@@ -20,13 +20,12 @@ import { createStore } from "redux";
 import { Provider, connect } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducers";
-import { setUser, clearUser } from "./actions/index";
+import { setUser, clearUser } from "./actions";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
 class Root extends Component {
   componentDidMount() {
-    // console.log(this.props.isLoading);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         // console.log(user);
@@ -38,6 +37,7 @@ class Root extends Component {
       }
     });
   }
+
   render() {
     return this.props.isLoading ? (
       <Spinner />

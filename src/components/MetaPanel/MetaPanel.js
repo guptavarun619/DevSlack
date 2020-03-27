@@ -8,7 +8,7 @@ import {
   List
 } from "semantic-ui-react";
 
-export class MetaPanel extends Component {
+class MetaPanel extends Component {
   state = {
     channel: this.props.currentChannel,
     privateChannel: this.props.isPrivateChannel,
